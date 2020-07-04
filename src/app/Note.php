@@ -12,7 +12,7 @@ class Note extends Model
      * @var array
      */
     protected $fillable = [
-        "name", "type", "link", "text", "original_filename",
+        "name", "type", "link", "text", "original_filename", "filename",
     ];
 
     /**

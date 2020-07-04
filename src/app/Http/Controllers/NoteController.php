@@ -24,6 +24,7 @@ class NoteController extends Controller
     {
         $data = $request->all();
         if ($data['type'] === NoteType::FILE) {
+            unset($data['filename']);
             $data['filename'] = Str::uuid()->toString();
         }
         $Note = Note::create($data);
@@ -34,7 +35,9 @@ class NoteController extends Controller
     public function update($id, Request $request)
     {
         $Note = Note::findOrFail($id);
-        $Note->update($request->all());
+        $data = $request->all();
+        unset($data['filename']);
+        $Note->update($data);
 
         return response()->json($Note, 200);
     }
