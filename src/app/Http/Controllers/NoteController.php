@@ -23,8 +23,8 @@ class NoteController extends Controller
     public function create(Request $request)
     {
         $data = $request->all();
+        unset($data['filename']);
         if ($data['type'] === NoteType::FILE) {
-            unset($data['filename']);
             $data['filename'] = Str::uuid()->toString();
         }
         $Note = Note::create($data);
