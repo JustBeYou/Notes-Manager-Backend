@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Note;
+use App\NoteType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class NoteController extends Controller
 {
@@ -20,7 +22,11 @@ class NoteController extends Controller
 
     public function create(Request $request)
     {
-        $Note = Note::create($request->all());
+        $data = $request->all();
+        if ($data['type'] === NoteType::FILE) {
+            $data['filename'] = Str::uuid()->toString();
+        }
+        $Note = Note::create($data);
 
         return response()->json($Note, 201);
     }
@@ -37,5 +43,26 @@ class NoteController extends Controller
     {
         Note::findOrFail($id)->delete();
         return response('Deleted Successfully', 200);
+    }
+
+    public function upload($id, Request $request) {
+        if ($request->hasFile('note')) {
+            $noteFile = $request->file('note');
+            $note = Note::find($id);
+            $noteFile->storeAs('notes', $note->filename);
+        } else {
+            return response('No file sent', 500);
+        }
+        return response('Uploaded Successfully', 200);
+    }
+
+    public function download($id, Request $request) {
+        $note = Note::find($id);
+        $headers = ['Content-Type' => 'text/plain'];
+        return response()->download(
+            storage_path('app/notes/' . $note->filename),
+            $note->original_filename,
+            $headers
+        );
     }
 }

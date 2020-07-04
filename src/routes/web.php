@@ -21,4 +21,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('notes', ['uses' => 'NoteController@create']);
     $router->delete('notes/{id}', ['uses' => 'NoteController@delete']);
     $router->put('notes/{id}', ['uses' => 'NoteController@update']);
+    $router->post('notes/{id}/upload', ['uses' => 'NoteController@upload']);
+    $router->get('notes/{id}/download', ['uses' => 'NoteController@download']);
 });
