@@ -17,7 +17,6 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('notes', ['uses' => 'NoteController@showAllNotes']);
-    $router->get('notes/{id}', ['uses' => 'NoteController@showOneNote']);
     $router->post('notes', ['uses' => 'NoteController@create']);
     $router->delete('notes/{id}', ['uses' => 'NoteController@delete']);
     $router->put('notes/{id}', ['uses' => 'NoteController@update']);
