@@ -17,6 +17,12 @@ class NoteController extends Controller
     public function create(Request $request)
     {
         $data = $request->only(['type', 'original_filename', 'name', 'link', 'text']);
+        if ($data['type'] >= NoteType::INVALID) {
+            return response()->json([
+                'status' => 'Invalid note type',
+            ], 500);
+        }
+
         if ($data['type'] === NoteType::FILE) {
             $data['filename'] = Str::uuid()->toString();
         }
@@ -46,16 +52,29 @@ class NoteController extends Controller
             $note = Note::find($id);
             $noteFile->storeAs('notes', $note->filename);
         } else {
-            return response('No file sent', 500);
+            return response()->json([
+                'status' => 'No file sent'
+            ], 500);
         }
-        return response('Uploaded Successfully', 200);
+        return response()->json([
+            'status' => 'Uploaded Successfully'
+        ], 200);
     }
 
     public function download($id) {
         $note = Note::find($id);
         $headers = ['Content-Type' => 'text/plain'];
+
+        $path = storage_path('app/notes/' . $note->filename);
+
+        if (!\Storage::disk('local')->exists('notes/' . $note->filename)) {
+            return response()->json([
+                'status' => 'File not found.',
+            ], 500);
+        }
+
         return response()->download(
-            storage_path('app/notes/' . $note->filename),
+            $path,
             $note->original_filename,
             $headers
         );

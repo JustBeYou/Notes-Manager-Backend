@@ -3,6 +3,7 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use App\User;
+use App\Note;
 use Faker\Generator as Faker;
 
 /*
@@ -20,5 +21,14 @@ $factory->define(User::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->email,
+    ];
+});
+
+$factory->define(Note::class, function (Faker $faker) {
+    return [
+        'name' => $faker->title,
+        'text' => $faker->text,
+        'original_filename' => $faker->name,
+        'link' => $faker->url,
     ];
 });
